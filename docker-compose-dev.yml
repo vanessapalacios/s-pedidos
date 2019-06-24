@@ -1,0 +1,81 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile-dev
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - users
+      - client
+
+  users:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/users:/usr/src/app'
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_ENV=development
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev  # nuevo
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test  # nuevo
+    depends_on:  # nuevo
+      - users-db
+
+  users-db:  # nuevo
+    build:
+      context: ./services/users/project/db
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  client:
+    build:
+      context: ./services/cliente
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/cliente:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - 3007:3000
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    depends_on:
+      - users
+  orders:
+      build:
+        context: ./services/pedidos
+        dockerfile: Dockerfile
+      volumes:
+        - './services/pedidos:/usr/src/app'
+      ports:
+        - 5002:5000
+      environment:
+        - FLASK_APP=project/__init__.py
+        - FLASK_ENV=development
+        - APP_SETTINGS=project.config.DevelopmentConfig
+        - DATABASE_URL=postgres://postgres:postgres@orders-db:5432/orders_dev  # nuevo
+        - DATABASE_TEST_URL=postgres://postgres:postgres@orders-db:5432/orders_test  # nuevo
+
+      depends_on:  # nuevo
+        - orders-db
+
+  orders-db:  # nuevo
+    build:
+      context: ./services/pedidos/project/db
+      dockerfile: Dockerfile
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
