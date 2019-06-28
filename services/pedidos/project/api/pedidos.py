@@ -53,6 +53,54 @@ def index():
     customers = Customer.query.all()
     return render_template('customers.html',customer=customers)
 
+@pedidos_blueprint.route('/customers', methods=['POST'])
+def add_customer():
+    post_data = request.get_json()
+    response_object = {
+            'status': 'failed',
+            'message': 'carga invalida.'
+    }
+    if not post_data:
+        return jsonify(response_object), 400
+    name = post_data.get('name')
+    try:
+        customer = Customer.query.filter_by(name=name).first()
+        if not customer:
+            db.session.add(Customer(name=name))
+            db.session.commit()
+            response_object['status'] = 'success'
+            response_object['message'] = f'{name} ha sido agregado!'
+            return jsonify(response_object), 201
+        else:
+            response_object['message'] = 'lo siento. el name ya existe.'
+            return jsonify(response_object), 400
+    except exc.IntegrityError:
+        db.session.rollback()
+        return jsonify(response_object), 400
+
+@pedidos_blueprint.route('/customer/<user_id>', methods=['GET'])
+def get_single_user(user_id):
+    """Obtener detalles de usuario único """
+    response_object = {
+        'status': 'failed',
+        'mensaje': 'El usuario no existe'
+    }
+    try:
+        user = Customer.query.filter_by(id=int(user_id)).first()
+        if not user:
+            return jsonify(response_object), 404
+        else:
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'id': user.id,
+                    'name': user.name
+                }
+            }
+            return jsonify(response_object), 200
+    except ValueError:
+        return jsonify(response_object), 404
+
 @pedidos_blueprint.route('/customers/<int:id>', methods=['PUT'])
 def edit_customer(id):
     customer = Customer.query.get_or_404(id)
