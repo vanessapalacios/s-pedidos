@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request, render_template, redirect
 from project.api.models import Customer, Product, Order, Item
 from project import db
 from sqlalchemy import exc
@@ -40,8 +40,8 @@ def get_customer(id):
                     'name': cus.name,
                 }
             }
-            return jsonify(response_object), 200
-        # return render_template('user.html', user=user)
+            # return jsonify(response_object), 200
+        return render_template('editcustomer.html', cus=cus)
     except ValueError:
         return jsonify(response_object), 404
 
@@ -106,13 +106,13 @@ def get_single_user(user_id):
         return jsonify(response_object), 404
 
 
-@pedidos_blueprint.route('/customers/<int:id>', methods=['PUT'])
+@pedidos_blueprint.route('/customers/<int:id>', methods=['POST'])
 def edit_customer(id):
     customer = Customer.query.get_or_404(id)
-    customer.import_data(request.json)
+    customer.name = request.form['name']
     db.session.add(customer)
     db.session.commit()
-    return jsonify({})
+    return redirect('/customers/', code=302)
 
 
 @pedidos_blueprint.route('/products/', methods=['GET'])
@@ -157,6 +157,16 @@ def get_customer_orders(id):
     customer = Customer.query.get_or_404(id)
     return jsonify({'orders': [order.get_url() for order in
                                customer.orders.all()]})
+
+
+@pedidos_blueprint.route('/customers/delete', methods=['POST'])
+def delete_customer():
+    if request.method == 'POST':
+        id = request.form['id_cliente']
+        cliente = Customer.query.get(id)
+        db.session.delete(cliente)
+        db.session.commit()
+        return redirect('/customers/', code=302)
 
 
 @pedidos_blueprint.route('/orders/<int:id>', methods=['GET'])

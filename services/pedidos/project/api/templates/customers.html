@@ -42,22 +42,7 @@
                 <a href="/orders" class="navbar-link">
                   Pedidos
                 </a>
-    
-                <div class="navbar-dropdown">
-                  <a class="navbar-item">
-                    About
-                  </a>
-                  <a class="navbar-item">
-                    Jobs
-                  </a>
-                  <a class="navbar-item">
-                    Contact
-                  </a>
-                  <hr class="navbar-divider">
-                  <a class="navbar-item">
-                    Report an issue
-                  </a>
-                </div>
+  
               </div>
             </div>
     
@@ -107,8 +92,12 @@
                     <tr>
                       <td>{{cust.id}}</td>
                       <td>{{cust.name}}</td>
-                      <td><a class="button is-link">Edit</a>
-                        <a class="button is-danger">Eliminar</a></td>
+                      <td>
+                          <a class="button is-small is-primary" href="/customers/{{cust.id}}">Editar</a> 
+                          <form method="POST" action="/customers/delete">
+                            <input type="hidden" name="id_cliente" value="{{cust.id}}">
+                              <button type="submit" class="button is-small is-danger">Eliminar</button> 
+                           </form>
                     </tr>
                       {% endfor %}
                   </tbody>
