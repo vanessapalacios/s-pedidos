@@ -1,16 +1,24 @@
 # Arquitectura microservicios con 12 facto app by Vanessa
 
 
-[![Build Status](https://travis-ci.org/vanessapalacios/x-app.svg?branch=master)](https://travis-ci.org/vanessapalacios/x-app)
+[![Build Status](https://api.travis-ci.com/vanessapalacios/s-pedidos.svg?branch=master)](https://travis-ci.org/vanessapalacios/s-pedidos)
 
-build
--- docker-compose -f docker-compose-dev.yml up -d --build
+## build
 
-recreate DB
--- docker-compose -f docker-compose-dev.yml run orders python manage.py recreate_db
+```
+docker-compose -f docker-compose-dev.yml up -d --build
+```
 
-test
--- docker-compose -f docker-compose-dev.yml run orders python manage.py test
 
-test COVERAGE
--- docker-compose -f docker-compose-dev.yml exec orders python manage.py cov
+## recreate DB
+```
+docker-compose -f docker-compose-dev.yml run orders python manage.py recreate_db
+```
+## test
+```
+docker-compose -f docker-compose-dev.yml run orders python manage.py test
+```
+## test COVERAGE
+```
+docker-compose -f docker-compose-dev.yml exec orders python manage.py cov
+```
