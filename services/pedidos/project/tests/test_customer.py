@@ -17,7 +17,6 @@ from project.tests.utils import add_customer
 class TestCustomerService(BaseTestCase):
     """Tests para el servicio Users."""
 
-    
     def test_sigle_customer_no_id(self):
         """Asegúrese de que se arroje un error si no se
         proporciona una identificación."""
@@ -34,7 +33,6 @@ class TestCustomerService(BaseTestCase):
 
         with self.client:
             response = self.client.get('/customer/999')
-            data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 404)
 
     def test_single_customer(self):

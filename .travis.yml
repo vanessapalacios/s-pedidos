@@ -13,12 +13,11 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1
   - docker-compose -f docker-compose-dev.yml up -d --build
 
 script:
-  - docker-compose -f docker-compose-dev.yml exec users python manage.py test
-  - docker-compose -f docker-compose-dev.yml exec users flake8 project
+  - docker-compose -f docker-compose-dev.yml exec orders python manage.py test
+  - docker-compose -f docker-compose-dev.yml exec orders flake8 project
 
 after_script:
   - docker-compose -f docker-compose-dev.yml down

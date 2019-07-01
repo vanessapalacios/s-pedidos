@@ -1,5 +1,5 @@
 from project import db
-from project.api.models import Customer,Product,Order,Item
+from project.api.models import Customer, Product
 
 
 def add_customer(name):
@@ -7,6 +7,7 @@ def add_customer(name):
     db.session.add(user)
     db.session.commit()
     return user
+
 
 def add_product(name):
     product = Product(name=name)

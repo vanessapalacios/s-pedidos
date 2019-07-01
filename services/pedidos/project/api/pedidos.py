@@ -1,23 +1,24 @@
-
-from flask import Blueprint, jsonify, request, render_template, redirect
-from project.api.models import Customer,Product,Order,Item
+from flask import Blueprint, jsonify, request, render_template
+from project.api.models import Customer, Product, Order, Item
 from project import db
 from sqlalchemy import exc
 
-pedidos_blueprint = Blueprint('pedidos', __name__,template_folder='./templates')
+pedidos_blueprint = Blueprint(
+    'pedidos', __name__, template_folder='./templates')
 
 
 @pedidos_blueprint.route('/pedidos/ping', methods=['GET'])
 def ping_pong():
-  return jsonify({
-    'status': 'success',
-    'message': 'pong'
-  })
+    return jsonify({
+        'status': 'success',
+        'message': 'pong'
+        })
+
 
 @pedidos_blueprint.route('/customers/', methods=['GET'])
 def get_customers():
     customers = Customer.query.all()
-    return render_template('customers.html',customer=customers)
+    return render_template('customers.html', customer=customers)
 
 
 @pedidos_blueprint.route('/customers/<int:id>', methods=['GET'])
@@ -44,6 +45,7 @@ def get_customer(id):
     except ValueError:
         return jsonify(response_object), 404
 
+
 @pedidos_blueprint.route('/customers/', methods=['POST'])
 def index():
     customer = Customer()
@@ -51,7 +53,8 @@ def index():
     db.session.add(customer)
     db.session.commit()
     customers = Customer.query.all()
-    return render_template('customers.html',customer=customers)
+    return render_template('customers.html', customer=customers)
+
 
 @pedidos_blueprint.route('/customers', methods=['POST'])
 def add_customer():
@@ -78,6 +81,7 @@ def add_customer():
         db.session.rollback()
         return jsonify(response_object), 400
 
+
 @pedidos_blueprint.route('/customer/<user_id>', methods=['GET'])
 def get_single_user(user_id):
     """Obtener detalles de usuario único """
@@ -101,6 +105,7 @@ def get_single_user(user_id):
     except ValueError:
         return jsonify(response_object), 404
 
+
 @pedidos_blueprint.route('/customers/<int:id>', methods=['PUT'])
 def edit_customer(id):
     customer = Customer.query.get_or_404(id)
@@ -112,12 +117,14 @@ def edit_customer(id):
 
 @pedidos_blueprint.route('/products/', methods=['GET'])
 def get_products():
-    products= Product.query.all()
-    return render_template('product.html',product=products)
+    products = Product.query.all()
+    return render_template('product.html', product=products)
+
 
 @pedidos_blueprint.route('/products/<int:id>', methods=['GET'])
 def get_product(id):
     return jsonify(Product.query.get_or_404(id).export_data())
+
 
 @pedidos_blueprint.route('/products/', methods=['POST'])
 def new_product():
@@ -125,8 +132,9 @@ def new_product():
     product.name = request.form['name']
     db.session.add(product)
     db.session.commit()
-    products= Product.query.all()
-    return render_template('product.html',product=products)
+    products = Product.query.all()
+    return render_template('product.html', product=products)
+
 
 @pedidos_blueprint.route('/products/<int:id>', methods=['PUT'])
 def edit_product(id):
@@ -137,10 +145,12 @@ def edit_product(id):
     return jsonify({})
 
 
-
 @pedidos_blueprint.route('/orders/', methods=['GET'])
 def get_orders():
-    return jsonify({'orders': [order.get_url() for order in Order.query.all()]})
+    return jsonify({'orders': [
+        order.get_url() for order in Order.query.all()
+        ]})
+
 
 @pedidos_blueprint.route('/customers/<int:id>/orders/', methods=['GET'])
 def get_customer_orders(id):
@@ -148,9 +158,11 @@ def get_customer_orders(id):
     return jsonify({'orders': [order.get_url() for order in
                                customer.orders.all()]})
 
+
 @pedidos_blueprint.route('/orders/<int:id>', methods=['GET'])
 def get_order(id):
     return jsonify(Order.query.get_or_404(id).export_data())
+
 
 @pedidos_blueprint.route('/customers/<int:id>/orders/', methods=['POST'])
 def new_customer_order(id):
@@ -161,6 +173,7 @@ def new_customer_order(id):
     db.session.commit()
     return jsonify({}), 201, {'Location': order.get_url()}
 
+
 @pedidos_blueprint.route('/orders/<int:id>', methods=['PUT'])
 def edit_order(id):
     order = Order.query.get_or_404(id)
@@ -168,6 +181,7 @@ def edit_order(id):
     db.session.add(order)
     db.session.commit()
     return jsonify({})
+
 
 @pedidos_blueprint.route('/orders/<int:id>', methods=['DELETE'])
 def delete_order(id):
@@ -182,9 +196,11 @@ def get_order_items(id):
     order = Order.query.get_or_404(id)
     return jsonify({'items': [item.get_url() for item in order.items.all()]})
 
+
 @pedidos_blueprint.route('/items/<int:id>', methods=['GET'])
 def get_item(id):
     return jsonify(Item.query.get_or_404(id).export_data())
+
 
 @pedidos_blueprint.route('/orders/<int:id>/items/', methods=['POST'])
 def new_order_item(id):
@@ -195,6 +211,7 @@ def new_order_item(id):
     db.session.commit()
     return jsonify({}), 201, {'Location': item.get_url()}
 
+
 @pedidos_blueprint.route('/items/<int:id>', methods=['PUT'])
 def edit_item(id):
     item = Item.query.get_or_404(id)
@@ -202,6 +219,7 @@ def edit_item(id):
     db.session.add(item)
     db.session.commit()
     return jsonify({})
+
 
 @pedidos_blueprint.route('/items/<int:id>', methods=['DELETE'])
 def delete_item(id):

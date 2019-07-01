@@ -6,7 +6,8 @@ FROM python:3.7.3-alpine
 RUN apk update && \
     apk add --virtual build-deps gcc python-dev musl-dev && \
     apk add postgresql-dev && \
-    apk add netcat-openbsd
+    apk add netcat-openbsd && \
+    apk add bind-tools
 
 # estableciendo directorio de trabajo
 WORKDIR /usr/src/app

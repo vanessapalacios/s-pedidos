@@ -1,3 +1,3 @@
-CREATE DATABASE pedidos_prod;
-CREATE DATABASE pedidos_dev;
-CREATE DATABASE pedidos_test;
+CREATE DATABASE users_prod;
+CREATE DATABASE users_dev;
+CREATE DATABASE users_test;

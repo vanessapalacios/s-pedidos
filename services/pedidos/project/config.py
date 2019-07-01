@@ -1,5 +1,6 @@
 import os  # nuevo
 
+
 class BaseConfig:
     """Configuración base"""
     TESTING = False
@@ -8,10 +9,12 @@ class BaseConfig:
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
+
 class DevelopmentConfig(BaseConfig):
     """Configuración de desarrollo"""
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')  # nuevo
     DEBUG_TB_ENABLED = True
+
 
 class TestingConfig(BaseConfig):
     """Configuración de prueba"""
